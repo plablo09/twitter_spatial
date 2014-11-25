@@ -102,7 +102,7 @@ def kde_grid(xys, bw=None, shp_link=None, spaced=0.01, ax=None, est=None):
     if not bw:
         ti = time.time()
         gs = GridSearchCV(kde, \
-                {'bandwidth': np.linspace(0.1, 1.0, 30)}, \
+                {'bandwidth': np.linspace(0.01, 7000.0, 20)}, \
                 cv=3)
         cv = gs.fit(xys)
         bw = cv.best_params_['bandwidth']
@@ -134,7 +134,7 @@ def kde_grid(xys, bw=None, shp_link=None, spaced=0.01, ax=None, est=None):
     zg = -9999 + np.zeros(gXY.shape[0])
     zg[zi] = z
     xyz = np.hstack((gXY[:, :2], zg[:, None]))
-    return xyz, gdim
+    return xyz, gdim, bw
 
 def grid_full(bbox, spaced):
     '''
