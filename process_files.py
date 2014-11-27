@@ -1,4 +1,4 @@
-import pyGDsandbox
+#import pyGDsandbox
 from kde_maps import kde_grid
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,14 +27,15 @@ for file in files:
     z = xyz[:, 2].reshape(gdim)
 
     levels = np.linspace(0, z.max(), 25)
-    f = plt.figure(figsize=(14, 4))
+    f = plt.figure(figsize=(12, 8))
 
     ax1 = f.add_subplot(121)
     base = maps.map_poly_shp(shp)
     base.set_facecolor('none')
+    base.set_linewidth(0.5)
     base.set_edgecolor('0.5')
-    ax1 = maps.setup_ax([base], ax=ax1)
     ax1.contourf(x, y, z, levels=levels, cmap=plt.cm.bone)
+    ax1 = maps.setup_ax([base], ax=ax1)
     ax1.set_title("KDE")
     plt.xlim(460000,520000)
     plt.ylim(2100000,2210000)
@@ -44,6 +45,7 @@ for file in files:
     ax2 = f.add_subplot(122)
     base = maps.map_poly_shp(shp)
     base.set_facecolor('none')
+    base.set_linewidth(0.5)
     base.set_edgecolor('0.5')
     ax2 = maps.setup_ax([base], ax=ax2)
     ax2.scatter(points[:, 0], points[:, 1])
