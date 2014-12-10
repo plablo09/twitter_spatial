@@ -15,7 +15,7 @@ for file in files:
     subprocess.check_call(
         ['./heatmap.py',
          '--shp_file', file,
-         '-r', '25',
+         '-r', '15',
          '-W', '1000',
          '--osm',
          '-B','0.5',

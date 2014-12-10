@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
@@ -10,7 +10,7 @@ import ogr
 ##############################################################################
 # Read data from shape file
 driver = ogr.GetDriverByName("ESRI Shapefile")
-ds = driver.Open("data/dia/d_0_8.shp", 0)
+ds = driver.Open("data/dia/t_8.shp", 0)
 l = ds.GetLayer()
 points = []
 for f in l:
@@ -42,9 +42,8 @@ n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 #       % metrics.silhouette_score(points, labels))
 
 ##############################################################################
-# Plot result
-import matplotlib.pyplot as plt
 
+# Plot result
 # Black removed and is used for noise instead.
 unique_labels = set(labels)
 colors = plt.cm.Spectral(np.linspace(0, 1, len(unique_labels)))
