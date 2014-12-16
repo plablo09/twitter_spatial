@@ -10,7 +10,7 @@ import ogr
 ##############################################################################
 # Read data from shape file
 driver = ogr.GetDriverByName("ESRI Shapefile")
-ds = driver.Open("data/dia/t_8.shp", 0)
+ds = driver.Open("data/dia/t_7.shp", 0)
 l = ds.GetLayer()
 points = []
 for f in l:
@@ -19,10 +19,11 @@ for f in l:
 
 points = np.array(points)
 #Standarize sample
-points = StandardScaler().fit_transform(points)
+scaler = StandardScaler()
+points = scaler.fit_transform(points)
 ##############################################################################
 # Compute DBSCAN
-db = DBSCAN(eps=0.8, min_samples=10).fit(points)
+db = DBSCAN(eps=0.95, min_samples=10).fit(points)
 core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
 core_samples_mask[db.core_sample_indices_] = True
 labels = db.labels_
@@ -53,12 +54,14 @@ for k, col in zip(unique_labels, colors):
         col = 'k'
 
     class_member_mask = (labels == k)
-
     xy = points[class_member_mask & core_samples_mask]
+    xy = scaler.inverse_transform(xy)
+    print len(xy)
     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=14)
 
     xy = points[class_member_mask & ~core_samples_mask]
+    xy = scaler.inverse_transform(xy)
     plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=6)
 
