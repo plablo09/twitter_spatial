@@ -4,6 +4,7 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 import numpy as np
+import scipy as sp
 import ogr
 
 
@@ -86,13 +87,16 @@ def hierarchical_dbscan(cluster_list,eps,min_samples,level=None):
 
 # Read data from shape file and build points array
 driver = ogr.GetDriverByName("ESRI Shapefile")
-ds = driver.Open("data/dia/d_0_9.shp", 0)
+ds = driver.Open("data/dia/starts_morning.shp", 0)
 l = ds.GetLayer()
 points = []
 for f in l:
     g = f.GetGeometryRef()
     points.append((g.GetX(),g.GetY()))
 
+distances = metrics.pairwise.pairwise_distances(points)
+print len(points)
+print np.shape(distances)
 points = [np.array(points)]
 
 # Call hierarchical_dbscan
@@ -102,10 +106,11 @@ print cluster_tree.keys()
 # Plot results
 colors = plt.cm.Spectral(np.linspace(0, 1, len(flat_list)))
 for k, col in enumerate(colors):
-    level = np.concatenate(flat_list[k])
-    label = 'level ' + str(k)
-    plt.plot(level[:, 0], level[:, 1], 'o', markerfacecolor=col,
-             markeredgecolor='k', markersize=6, label=label)
+   if len(flat_list[k]):
+      level = np.concatenate(flat_list[k])
+      label = 'level ' + str(k)
+      plt.plot(level[:, 0], level[:, 1], 'o', markerfacecolor=col,
+             markeredgecolor='k', markersize=6, label=label, alpha=0.5)
 
 plt.legend(loc='lower right',numpoints=1)
 plt.show()
