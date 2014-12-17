@@ -59,13 +59,16 @@ def hierarchical_dbscan(cluster_list,eps,min_samples,level=None):
    this_level = []
    processed = 0
    tmp = None
+   cluster_counter = 0
    for cluster in cluster_list:
      if len(cluster) > 100:
          tmp = compute_dbscan(cluster,eps,min_samples)
          this_level.append(tmp)
-         cluster_tree[cluster.tostring()] = tmp
+         name = 'level_' + str(level) + '_cluster_' + str(cluster_counter)
+         cluster_tree[name] = tmp
          flat_list.append(tmp)
          processed += 1
+         cluster_counter += 1
 
    print ("hierarchical_dbscan: %s clusters clusters processed at level %s"
          % (processed, level))
@@ -94,6 +97,7 @@ points = [np.array(points)]
 
 # Call hierarchical_dbscan
 hierarchical_dbscan(points,0.8,10)
+print cluster_tree.keys()
 
 # Plot results
 colors = plt.cm.Spectral(np.linspace(0, 1, len(flat_list)))
