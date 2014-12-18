@@ -87,7 +87,7 @@ def hierarchical_dbscan(cluster_list,eps,min_samples,level=None):
 
 # Read data from shape file and build points array
 driver = ogr.GetDriverByName("ESRI Shapefile")
-ds = driver.Open("data/dia/starts_morning.shp", 0)
+ds = driver.Open("data/dia/t_7.shp", 0)
 l = ds.GetLayer()
 points = []
 for f in l:
@@ -125,9 +125,9 @@ for k, col in enumerate(colors):
       distances = metrics.pairwise.pairwise_distances(level)
       distances.flatten()
       distances = np.ma.masked_equal(distances,0)
-      hist, bins = np.histogram(distances,50)
-      width = 0.7 * (bins[1] - bins[0])
-      center = (bins[:-1] + bins[1:]) / 2
+      hist, bins = np.histogram(distances,30)
+    #   width = 0.7 * (bins[1] - bins[0])
+    #   center = (bins[:-1] + bins[1:]) / 2
       ax_h.bar(center,hist, align='center',width=width,color=col)
 
 ax_p.legend(loc='lower right',numpoints=1)
