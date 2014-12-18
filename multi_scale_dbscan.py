@@ -94,23 +94,42 @@ for f in l:
     g = f.GetGeometryRef()
     points.append((g.GetX(),g.GetY()))
 
-distances = metrics.pairwise.pairwise_distances(points)
-print len(points)
-print np.shape(distances)
-points = [np.array(points)]
 
+points = [np.array(points)]
 # Call hierarchical_dbscan
 hierarchical_dbscan(points,0.8,10)
-print cluster_tree.keys()
+p = plt.figure(1,figsize=(10,10))
+gs = plt.GridSpec(12, 2)
+ax_p_loc = gs.new_subplotspec((0,0), rowspan=8, colspan=2)
+ax_h_loc = gs.new_subplotspec((9,0), rowspan=3, colspan=2)
+ax_p = p.add_subplot(ax_p_loc)
+ax_h = p.add_subplot(ax_h_loc)
+#Plot histogram for original points
+distances_original = metrics.pairwise.pairwise_distances(points[0])
+distances_original.flatten()
+distances_original = np.ma.masked_equal(distances_original,0)
 
-# Plot results
+#print distances_original[3][3]
+hist, bins = np.histogram(distances_original,30)
+width = 0.7 * (bins[1] - bins[0])
+center = (bins[:-1] + bins[1:]) / 2
+ax_h.bar(center,hist, align='center',width=width)
+# Plot clusters
 colors = plt.cm.Spectral(np.linspace(0, 1, len(flat_list)))
 for k, col in enumerate(colors):
    if len(flat_list[k]):
       level = np.concatenate(flat_list[k])
       label = 'level ' + str(k)
-      plt.plot(level[:, 0], level[:, 1], 'o', markerfacecolor=col,
-             markeredgecolor='k', markersize=6, label=label, alpha=0.5)
+      ax_p.plot(level[:, 0], level[:, 1], 'o', markerfacecolor=col,
+             markeredgecolor='k', markersize=6, label=label)
+      distances = metrics.pairwise.pairwise_distances(level)
+      distances.flatten()
+      distances = np.ma.masked_equal(distances,0)
+      hist, bins = np.histogram(distances,50)
+      width = 0.7 * (bins[1] - bins[0])
+      center = (bins[:-1] + bins[1:]) / 2
+      ax_h.bar(center,hist, align='center',width=width,color=col)
 
-plt.legend(loc='lower right',numpoints=1)
+ax_p.legend(loc='lower right',numpoints=1)
+
 plt.show()
